@@ -30,18 +30,4 @@ $ cd forex_symfony/
 $ php bin/console server:run
 ```
 
-Alternatively, you can [configure a fully-featured web server][2] like Nginx
-or Apache to run the application.
-
-Tests
------
-
-Execute this command to run tests:
-
-```bash
-$ cd forex_symfony/
-$ ./vendor/bin/simple-phpunit
-```
-
-[1]: https://symfony.com/doc/current/reference/requirements.html
-[2]: https://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html
+Alternatively, you can [configure a fully-featured web server][2] like Nginx or Apache to run the application.
