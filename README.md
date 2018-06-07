@@ -16,7 +16,7 @@ Installation
 Execute this command to install the project:
 
 ```bash
-$ composer create-project oom-patchara/forex_symfony
+$ composer create-project oom-patchara/forex_symfony forex_symfony
 ```
 
 Usage
@@ -31,3 +31,10 @@ $ php bin/console server:run
 ```
 
 Alternatively, you can [configure a fully-featured web server][2] like Nginx or Apache to run the application.
+
+Notes
+-----
+
+ * Type quantity in 1st texbox, converted rate will return in 2nd textbox
+ * You can even change vaule in the 2nd textbox to do the reverse conversion
+ * Switch currency dropdown to change to different currency
