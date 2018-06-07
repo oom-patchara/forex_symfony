@@ -1,4 +1,6 @@
 {
+    "name": "oom-patchara/forex_symfony",
+    "description": "FOREX currency converter",
     "type": "project",
     "license": "proprietary",
     "require": {
