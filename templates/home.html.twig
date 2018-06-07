@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Forex Quote Calculator</title>
+
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <!-- Custom styles for this template -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="/css/floating-labels.css" rel="stylesheet">
+    </head>
+    <body>
+        <form class="form-signin">
+            <div class="text-center mb-4">
+                <h1 class="h5 mb-3 font-weight-normal" id="title1"></h1>
+                <h1 class="h2 mb-3 font-weight-bold" id="title2"></h1>
+                <i class="fa fa-spinner fa-spin text-success" style="font-size:20px; display: none;" id="spinner"></i>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <input type="text" name="amount1" id="amount1" class="form-control amount">
+                </div>
+                <div class="form-group">
+                    <select name="curr1" id="curr1" class="form-control curr" required>
+                        {% for key, currency in currencies %}
+                            <option value="{{ key }}" {{ key == 'USD' ? 'selected' : '' }}>{{ currency }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <input type="text" name="amount2" id="amount2" class="form-control amount">
+                </div>
+                <div class="form-group">
+                    <select name="curr2" id="curr2" class="form-control curr" required>
+                        {% for key, currency in currencies %}
+                            <option value="{{ key }}" {{ key == 'EUR' ? 'selected' : '' }}>{{ currency }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="alert alert-danger" id="error" style="display: none;"></div>
+        </form>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+        <script>
+        
+            $( document ).ready(function() {
+ 
+                // On change currency
+                $(".curr").change(function() {
+
+                    var curr1 = $("#curr1").val();
+                    var curr2 = $("#curr2").val();
+                    var amount1 = $("#amount1").val();
+                    //var amount2 = $("#amount2").val();
+
+                    exchange_callback(curr1, curr2, amount1, false);
+                });
+
+
+                // On change amount
+                $(".amount").keyup(function() {
+
+                    var amount = $(this).val();
+                    if ($(this).prop('id') == 'amount1') {
+                        var curr1 = $("#curr1").val();
+                        var curr2 = $("#curr2").val();
+                        var reverse = false;
+                        $("#amount2").val('');
+                    } else {
+                        var curr1 = $("#curr2").val();
+                        var curr2 = $("#curr1").val();
+                        var reverse = true;
+                        $("#amount1").val('');
+                    }
+
+                    $("#title1").text('');
+                    $("#title2").text('');
+                    $("#spinner").show();
+                    
+                    delay(function(){
+                      exchange_callback(curr1, curr2, amount, reverse);
+                    }, 500);
+                });
+
+
+                // calculate callback function
+                function exchange_callback(curr1, curr2, amount, reverse) {
+
+                    if (amount != '') {
+                        $("#title1").text('');
+                        $("#title2").text('');
+                        $("#spinner").show();
+
+                        $.get("/get-rates", {"curr1": curr1, "curr2": curr2, "amount": amount }, function(data) {
+
+                            if (data.error == true) {
+                                $("#amount2").val('');
+                                $("#error").html('<strong>Error!</strong> ' + data.value).show();
+                            } else {
+                                if (reverse) {
+                                    var rate = data.value;
+                                    $("#title1").text(rate + ' ' + $("#curr1").find("option:selected").text() + ' equals');
+
+                                    var amount = $("#amount2").val();
+                                    $("#title2").text(amount + ' ' + $("#curr2").find("option:selected").text());
+
+                                    $("#amount1").val(rate);
+                                } else {
+                                    var amount = $("#amount1").val();
+                                    $("#title1").text(amount + ' ' + $("#curr1").find("option:selected").text() + ' equals');
+
+                                    var rate = data.value;
+                                    $("#title2").text(rate + ' ' + $("#curr2").find("option:selected").text());
+
+                                    $("#amount2").val(rate);
+                                }
+                                
+                                $("#error").hide();
+                            }
+
+                            $("#spinner").hide();
+
+                        }, "json");
+                    }
+                }
+
+                // delay keyup
+                var delay = (function(){
+                  var timer = 0;
+                  return function(callback, ms){
+                    clearTimeout (timer);
+                    timer = setTimeout(callback, ms);
+                  };
+                })();
+                
+             
+            });
+        </script>
+  </body>
+</html>
+
+
