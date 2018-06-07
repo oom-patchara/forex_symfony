@@ -75,5 +75,9 @@
         "symfony": {
             "allow-contrib": false
         }
-    }
+    },
+    "repositories": [{
+         "type": "vcs",
+         "url": "https://github.com/oom-patchara/forex_symfony" 
+    }]
 }
