@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Forex Quote Calculator</title>
+
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+        <!-- Custom styles for this template -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="/css/floating-labels.css" rel="stylesheet">
+    </head>
+    <body>
+
+
+
+        <form class="form-signin">
+            <div class="text-center mb-4">
+                <h1 class="h5 mb-3 font-weight-normal" id="title1"></h1>
+                <h1 class="h2 mb-3 font-weight-bold" id="title2"></h1>
+                <i class="fa fa-spinner fa-spin text-success" style="font-size:20px; display: none;" id="spinner"></i>
+            </div>
+
+            <div class="row">
+
+                <div class="input-group">
+                   <input type="text" class="form-control" id="eth_address" placeholder="ETH address">
+                   <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="get_balance">Get Balance</button>
+                   </span>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="input-group">
+                   <input type="text" class="form-control" id="" placeholder="">
+                   <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="new_account">New Account</button>
+                   </span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="from" placeholder="From">
+                    <input type="text" class="form-control" id="to" placeholder="To">
+                    <input type="text" class="form-control" id="amount" placeholder="Amount">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="send_transaction">Send Transaction</button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row"><hr><br/><br/></div>
+
+            <div class="row">
+                <input type="text" class="form-control" id="provider" placeholder="Provider">
+                <textarea class="form-control" id="output">Return</textarea>
+            </div>
+
+
+            <div class="alert alert-danger" id="error" style="display: none;"></div>
+        </form>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+        <script language="javascript" type="text/javascript" src="js/web3/dist/web3.js"></script>
+
+
+        <script>
+
+        // var Web3 = require('web3');
+        // var web3 = new Web3();
+        // web3.setProvider(new web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        // function watchBalance() {
+        //     var coinbase = web3.eth.coinbase;
+        //     var originalBalance = web3.eth.getBalance(coinbase).toNumber();
+        //     document.getElementById('coinbase').innerText = 'coinbase: ' + coinbase;
+        //     document.getElementById('original').innerText = ' original balance: ' + originalBalance + '    watching...';
+        //     web3.eth.filter('latest').watch(function() {
+        //         var currentBalance = web3.eth.getBalance(coinbase).toNumber();
+        //         document.getElementById("current").innerText = 'current: ' + currentBalance;
+        //         document.getElementById("diff").innerText = 'diff:    ' + (currentBalance - originalBalance);
+        //     });
+        // }
+        
+
+            // //var web3 = new Web3(Web3.givenProvider || "wss://mainnet.infura.io/WcE17u0nyuH7WpVMQLQC");
+            // //var web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/WcE17u0nyuH7WpVMQLQC");
+            // var web3 = new Web3(Web3.givenProvider || "ws://127.0.0.1:7545");
+
+            // //web3.eth.getBalance('0x281055Afc982d96fAB65b3a49cAc8b878184Cb16', (err, wei) => { balance = web3.utils.fromWei(wei, 'ether') });
+            // //var bal = web3.eth.getBalance("0x281055Afc982d96fAB65b3a49cAc8b878184Cb16");
+            // var bal = web3.eth.getBalance("0x33eA81669e27d664Cf9955Baf52A28Fa31eeeedc");
+
+
+            // console.info(bal);
+
+            // if (typeof web3 !== 'undefined') {
+            //     web3 = new Web3(web3.currentProvider);
+            // } else {
+            //     // set the provider you want from Web3.providers
+            //     web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+            // }
+
+
+
+            
+
+            //var web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
+
+            $("#get_balance").click(function() {
+
+                var web3 = new Web3(new Web3.providers.HttpProvider( $("#provider").val() ));
+                var bal = web3.eth.getBalance( $("#eth_address").val() );
+
+                $("#output").text(web3.fromWei(bal, "ether").toString());
+
+            });
+
+
+            $("#new_account").click(function() {
+
+                var web3 = new Web3(new Web3.providers.HttpProvider( $("#provider").val() ));
+
+                var phppasswallet = "THE_PASSWORD";   //provide a password
+                var walletprivate = web3.personal.newAccount(phppasswallet);
+                //var output = web3.eth.personal.newAccount('!@superpassword');
+                //var output = web3.eth.personal.newAccount('!@superpassword')
+
+                // var account = web3.eth.accounts.create();   //Creates the account (is an object)
+                // console.log(account);   //show the object in the console
+                // var walletprivate = account["privateKey"];   //Get the private key from the object
+                
+                // var keystore = web3.eth.accounts.encrypt(walletprivate, phppasswallet);   //Get the keystore
+                // console.log(keystore); 
+
+                $("#output").text(walletprivate);
+
+            });
+
+
+
+            $("#send_transaction").click(function() {
+
+                var web3 = new Web3(new Web3.providers.HttpProvider( $("#provider").val() ));
+                
+                var handleReceipt = (error, receipt) => {
+                  if (error) console.error(error);
+                  else {
+
+                    $("#output").text(receipt);
+                    //res.json(receipt);
+                  }
+                }
+
+                web3.eth.sendTransaction({
+                 from: $('#from').val(),
+                 to: $('#to').val(),
+                 value: web3.toWei($('#amount').val(), "ether")
+                }, handleReceipt);
+            });
+
+            
+
+            // $( document ).ready(function() {
+ 
+            // });
+        </script>
+  </body>
+</html>
+
+

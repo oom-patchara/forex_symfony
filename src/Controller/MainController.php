@@ -20,6 +20,17 @@ class MainController extends AbstractController
 
         return $this->render('home.html.twig', ['currencies'=>$currencies]);
     }
+
+
+    /**
+     * @Route("/web3")
+     */
+    public function web3()
+    {
+        $currencies = ['USD'=>'US Dollar', 'EUR'=>'Euro', 'AUD'=>'Australian Dollar', 'BTC'=>'Bitcoin', 'THB'=>'Thai Baht'];
+
+        return $this->render('web3.html.twig', ['currencies'=>$currencies]);
+    }
     
 
     /**
