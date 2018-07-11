@@ -45,6 +45,12 @@
                         <button class="btn btn-primary" type="button" id="new_account">New Account</button>
                    </span>
                 </div>
+                <div class="input-group">
+                   <input type="text" class="form-control" id="" placeholder="">
+                   <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" id="list_account">List Accounts</button>
+                   </span>
+                </div>
             </div>
 
             <div class="row">
@@ -61,7 +67,7 @@
             <div class="row"><hr><br/><br/></div>
 
             <div class="row">
-                <input type="text" class="form-control" id="provider" placeholder="Provider">
+                <input type="text" class="form-control" id="provider" placeholder="Provider" value="HTTP://127.0.0.1:7545">
                 <textarea class="form-control" id="output">Return</textarea>
             </div>
 
@@ -71,7 +77,8 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
-        <script language="javascript" type="text/javascript" src="js/web3/dist/web3.js"></script>
+        <!--script language="javascript" type="text/javascript" src="js/web3/dist/web3.js"></script-->
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 
 
         <script>
@@ -131,18 +138,23 @@
                 var web3 = new Web3(new Web3.providers.HttpProvider( $("#provider").val() ));
 
                 var phppasswallet = "THE_PASSWORD";   //provide a password
-                var walletprivate = web3.personal.newAccount(phppasswallet);
-                //var output = web3.eth.personal.newAccount('!@superpassword');
-                //var output = web3.eth.personal.newAccount('!@superpassword')
+                var address = web3.personal.newAccount(phppasswallet);
+                //web3.personal.newAccount(phppasswallet, function(err, res){ console.log("error"+err); console.log("res"+res); });
 
-                // var account = web3.eth.accounts.create();   //Creates the account (is an object)
-                // console.log(account);   //show the object in the console
-                // var walletprivate = account["privateKey"];   //Get the private key from the object
-                
-                // var keystore = web3.eth.accounts.encrypt(walletprivate, phppasswallet);   //Get the keystore
-                // console.log(keystore); 
+                //var address = web3.eth.accounts.create(phppasswallet);
 
-                $("#output").text(walletprivate);
+                $("#output").text(address);
+
+            });
+
+
+            $("#list_account").click(function() {
+
+                var web3 = new Web3(new Web3.providers.HttpProvider( $("#provider").val() ));
+
+                var accounts = web3.eth.accounts;
+
+                $("#output").text(accounts);
 
             });
 
